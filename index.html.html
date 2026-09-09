@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operasi Rahasia: dr Anne</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 20%, #24304d 0%, transparent 30%),
+    radial-gradient(circle at 80% 80%, #3b2749 0%, transparent 30%),
+    #0d1220;
+  color: #f5f0e8;
+  font-family: 'DM Mono', monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 620px;
+}
+
+.screen {
+  display: none;
+  animation: fadeIn .6s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+.card {
+  background: rgba(22, 29, 48, .94);
+  border: 1px solid #46516e;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 70px rgba(0,0,0,.35);
+}
+
+.badge {
+  display: inline-block;
+  border: 1px solid #8e9ab8;
+  color: #bfc9e5;
+  padding: 7px 12px;
+  border-radius: 50px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+h1, h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(32px, 7vw, 52px);
+  margin: 0 0 18px;
+}
+
+h2 {
+  font-size: 30px;
+  margin-top: 0;
+}
+
+p {
+  color: #c9d0df;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.highlight {
+  color: #f3c98b;
+}
+
+button {
+  background: #f3c98b;
+  color: #171b29;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  transition: .2s;
+  margin-top: 15px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  background: #ffe0aa;
+}
+
+button.secondary {
+  background: transparent;
+  color: #f3c98b;
+  border: 1px solid #65718e;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  background: #0d1220;
+  color: white;
+  border: 1px solid #53607d;
+  border-radius: 12px;
+  font-family: inherit;
+  margin-top: 15px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #f3c98b;
+}
+
+.error {
+  color: #f09a9a;
+  font-size: 12px;
+  min-height: 20px;
+  margin-top: 12px;
+}
+
+.progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+
+.dot {
+  height: 4px;
+  flex: 1;
+  background: #303a55;
+  border-radius: 10px;
+}
+
+.dot.done {
+  background: #f3c98b;
+}
+
+.mission-number {
+  color: #f3c98b;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.choice {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #202a43;
+  color: #e7ebf4;
+  border: 1px solid #46516e;
+  margin: 10px 0;
+  font-weight: normal;
+}
+
+.choice:hover {
+  background: #2d3958;
+  border-color: #f3c98b;
+}
+
+.choice.correct {
+  background: #274d43;
+  border-color: #75c9a8;
+}
+
+.choice.wrong {
+  background: #542e3b;
+  border-color: #d9869a;
+}
+
+.file {
+  background: #111827;
+  border: 1px dashed #687594;
+  border-radius: 15px;
+  padding: 18px;
+  margin: 20px 0;
+  font-size: 12px;
+  color: #aeb9d2;
+}
+
+.file strong {
+  display: block;
+  color: #f3c98b;
+  margin-bottom: 8px;
+}
+
+.letter {
+  background: #f7f0e4;
+  color: #24283a;
+  padding: 28px;
+  border-radius: 8px;
+  line-height: 1.9;
+  font-family: Georgia, serif;
+  box-shadow: 0 10px 35px rgba(0,0,0,.25);
+}
+
+.letter p {
+  color: #24283a;
+  font-family: Georgia, serif;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.letter .signature {
+  margin-top: 25px;
+  font-style: italic;
+}
+
+.stamp {
+  display: inline-block;
+  border: 2px solid #b65d65;
+  color: #b65d65;
+  padding: 8px 12px;
+  transform: rotate(-5deg);
+  font-size: 11px;
+  margin-top: 15px;
+}
+
+.final-title {
+  text-align: center;
+  font-size: 38px;
+}
+
+.heart {
+  text-align: center;
+  font-size: 45px;
+  animation: pulse 1.5s infinite;
+}
+
+.footer {
+  text-align: center;
+  color: #66728e;
+  font-size: 10px;
+  margin-top: 20px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@media(max-width: 500px) {
+  .card { padding: 24px; }
+  h1 { font-size: 36px; }
+  .letter { padding: 22px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- PEMBUKA -->
+  <section class="screen active" id="screen0">
+    <div class="card">
+      <span class="badge">TOP SECRET • CONFIDENTIAL</span>
+
+      <h1>Operasi<br><span class="highlight">Anne</span></h1>
+
+      <p>
+        Selamat datang, Dokter.
+        <br><br>
+        Anda telah terpilih sebagai subjek utama dalam sebuah
+        <span class="highlight">misi rahasia</span>.
+      </p>
+
+      <div class="file">
+        <strong>FILE: MUTASI_2026</strong>
+        Status: Amanah baru terdeteksi<br>
+        Lokasi: Manajemen Jangmed → Direktur<br>
+        Tingkat kerahasiaan: Jangan bilang-bilang dulu 🤫
+      </div>
+
+      <p>
+        Untuk membuka pesan dari seseorang yang
+        <span class="highlight">suka merepotkan Anda</span>,
+        selesaikan seluruh misi.
+      </p>
+
+      <button onclick="nextScreen(1)">MULAI MISI →</button>
+    </div>
+  </section>
+
+
+  <!-- PASSWORD -->
+  <section class="screen" id="screen1">
+    <div class="card">
+      <div class="mission-number">MISI 01 / 04</div>
+      <h2>Akses Rahasia</h2>
+
+      <p>
+        Sistem mendeteksi bahwa Anda akan memasuki
+        sebuah amanah baru.
+      </p>
+
+      <p>
+        Masukkan password untuk membuka berkas pertama.
+      </p>
+
+      <div class="file">
+        <strong>PETUNJUK PASSWORD</strong>
+        Nama panggilan dokter yang paling sering
+        disebut oleh Pj FO.
+      </div>
+
+      <input id="password" placeholder="Ketik password..." autocomplete="off">
+
+      <div class="error" id="passError"></div>
+
+      <button onclick="checkPassword()">BUKA BERKAS →</button>
+    </div>
+  </section>
+
+
+  <!-- TEKA-TEKI -->
+  <section class="screen" id="screen2">
+    <div class="card">
+      <div class="mission-number">MISI 02 / 04</div>
+      <h2>Ujian Ketelitian</h2>
+
+      <p>
+        Sebelum menjadi Direktur, ada satu pertanyaan
+        penting yang harus dijawab.
+      </p>
+
+      <p class="highlight">
+        Menurut Anda, apa senjata rahasia Pj FO
+        saat menghadapi dokter spesialis?
+      </p>
+
+      <button class="choice" onclick="wrongAnswer(this)">
+        A. Lari ke parkiran
+      </button>
+
+      <button class="choice" onclick="wrongAnswer(this)">
+        B. Pura-pura sinyal hilang
+      </button>
+
+      <button class="choice" onclick="correctAnswer(this)">
+        C. Meminta bantuan dr Anne 😭
+      </button>
+
+      <button class="choice" onclick="wrongAnswer(this)">
+        D. Menghilang ke ruang arsip
+      </button>
+
+      <div class="error" id="answerError"></div>
+    </div>
+  </section>
+
+
+  <!-- SURAT -->
+  <section class="screen" id="screen3">
+    <div class="card">
+      <div class="mission-number">MISI 03 / 04</div>
+      <h2>Berkas Kenangan</h2>
+
+      <p>
+        Sistem berhasil menemukan satu catatan
+        dari seseorang yang selama ini bekerja
+        bersama Anda.
+      </p>
+
+      <div class="file">
+        <strong>CATATAN INTERNAL</strong>
+        "Walaupun baru beberapa tahun,
+        ternyata ada orang yang merasa sangat terbantu."
+      </div>
+
+      <p>
+        Untuk membuka catatan terakhir,
+        klik tombol di bawah.
+      </p>
+
+      <button onclick="nextScreen(4)">BUKA CATATAN →</button>
+    </div>
+  </section>
+
+
+  <!-- FINAL -->
+  <section class="screen" id="screen4">
+    <div class="card">
+      <div class="mission-number">MISI 04 / 04</div>
+      <h2>Pesan Terakhir</h2>
+
+      <p>
+        Semua misi berhasil diselesaikan.
+        <br>
+        Berkas terakhir telah terbuka.
+      </p>
+
+      <div class="file">
+        <strong>STATUS: MESSAGE UNLOCKED</strong>
+        Penerima: dr Anne<br>
+        Pengirim: Pj FO yang suka merepotkanmu
+      </div>
+
+      <button onclick="nextScreen(5)">BUKA PESAN RAHASIA 🤍</button>
+    </div>
+  </section>
+
+
+  <!-- UCAPAN -->
+  <section class="screen" id="screen5">
+    <div class="card">
+      <div class="heart">🤍</div>
+
+      <h1 class="final-title">Untuk dr Anne</h1>
+
+      <div class="letter">
+
+        <p>
+          Selamat atas amanah barunya dok Anne.
+        </p>
+
+        <p>
+          Huhu ada rasa sedih yang gabisa diutarakan,
+          walaupun baru beberapa tahun aku kerjasama
+          dengan dokter tapi selama itu juga aku merasa
+          terbantu khususnya menghadapi dokter spesialis
+          yang sungguh sungguh seperti baby vintage ini.
+        </p>
+
+        <p>
+          Terimakasih dr Anne untuk pengalamannya selama ini,
+          mudah-mudahan dokter selalu sehat, kuat dan betah
+          di tempat barunya.
+        </p>
+
+        <p>
+          Happy terus dokter,
+        </p>
+
+        <p class="signature">
+          Dari aku Pj FO yang suka merepotkanmu.
+        </p>
+
+        <div class="stamp">MISSION COMPLETE</div>
+
+      </div>
+
+      <button class="secondary" onclick="restartGame()">
+        ULANGI MISI
+      </button>
+    </div>
+
+    <div class="footer">
+      Dibuat dengan sedikit rasa sedih dan banyak rasa terima kasih.
+    </div>
+  </section>
+
+</div>
+
+<script>
+let currentScreen = 0;
+
+function nextScreen(number) {
+  document.getElementById("screen" + currentScreen)
+    .classList.remove("active");
+
+  currentScreen = number;
+
+  document.getElementById("screen" + currentScreen)
+    .classList.add("active");
+
+  window.scrollTo(0, 0);
+}
+
+function checkPassword() {
+  const input = document.getElementById("password").value
+    .trim().toLowerCase();
+
+  // Password: anne
+  if (input === "anne" || input === "dr anne" || input === "dok anne") {
+    nextScreen(2);
+  } else {
+    document.getElementById("passError").textContent =
+      "Password salah. Coba ingat-ingat lagi, Dok 😭";
+  }
+}
+
+function wrongAnswer(button) {
+  button.classList.add("wrong");
+
+  document.getElementById("answerError").textContent =
+    "Jawaban kurang tepat. Coba lagi, Dok 😂";
+
+  setTimeout(() => {
+    button.classList.remove("wrong");
+  }, 700);
+}
+
+function correctAnswer(button) {
+  button.classList.add("correct");
+
+  document.getElementById("answerError").textContent =
+    "Benar! Pj FO memang tidak bisa hidup tanpa bantuan dr Anne 😭🤍";
+
+  setTimeout(() => {
+    nextScreen(3);
+  }, 1300);
+}
+
+function restartGame() {
+  currentScreen = 5;
+  nextScreen(0);
+  document.getElementById("password").value = "";
+  document.getElementById("passError").textContent = "";
+}
+</script>
+
+</body>
+</html>
